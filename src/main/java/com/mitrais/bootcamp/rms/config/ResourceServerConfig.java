@@ -2,11 +2,15 @@ package com.mitrais.bootcamp.rms.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     private String httpAccessScope(String ...scopes) {
         StringBuilder scopeAccess = new StringBuilder();
@@ -28,12 +32,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         .authorizeRequests()
         		.and().csrf().disable()
         		.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/employees").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
+                .antMatchers(HttpMethod.GET, "/roles").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/employees").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/employees/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
                 .antMatchers(HttpMethod.GET, "/employees/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
                 .antMatchers(HttpMethod.GET, "/employees/*/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE_DETAIL"))
                 .antMatchers(HttpMethod.POST, "/employees").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
-                .antMatchers(HttpMethod.POST, "/employees/**").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"));
+                .antMatchers(HttpMethod.POST, "/employees/**").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
+                .anyRequest().fullyAuthenticated();
 
     }
 

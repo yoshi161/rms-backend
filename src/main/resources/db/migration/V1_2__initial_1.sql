@@ -105,6 +105,44 @@ CREATE TABLE IF NOT EXISTS `projects` (
   CONSTRAINT `FK1vb52nfqopectvb1rwsq0x95j` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE IF NOT EXISTS `role` (
+  `role_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`role_id`),
+  KEY `FK1vb52nfqopectvb1rws30292e` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `privilege` (
+  `privilege_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`privilege_id`),
+  KEY `FK1vb52nfqopectvb13wsq0292s` (`privilege_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `roles_privileges` (
+  `roles_privileges_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_id` bigint(20) DEFAULT NULL,
+  `privilege_id` bigint(20) DEFAULT NULL,
+  KEY `FK1vb52nfqopectvb1rwsq0x92e` (`roles_privileges_id`),
+  CONSTRAINT `FK1vb52nfqopectvb1rwsq0x22j` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`),
+  CONSTRAINT `FK1vb52nfqopectvb1rwsq0x22k` FOREIGN KEY (`privilege_id`) REFERENCES `privilege` (`privilege_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE IF NOT EXISTS `employees_roles` (
+  `employees_roles_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `emp_id` bigint(20) DEFAULT NULL,
+  `role_id` bigint(20) DEFAULT NULL,
+  KEY `FK1vb52nfqope2tvb1rwsq0x92e` (`employees_roles_id`),
+  CONSTRAINT `FK1vb52nfqopecttb1rwsq0x22j` FOREIGN KEY (`emp_id`) REFERENCES `employee` (`emp_id`),
+  CONSTRAINT `FK1vb52nhqopectvb1rwsq0x22j` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 -- Data exporting was unselected.
 -- Dumping structure for table rms.ref_division
 CREATE TABLE IF NOT EXISTS `ref_division` (

@@ -2,21 +2,24 @@ package com.mitrais.bootcamp.rms.data.entity;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -90,6 +93,16 @@ public class Employee implements UserDetails {
     private Timestamp dateAdded;
     private @Version @JsonIgnore
     Long version;
+    
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name="employees_roles",
+    		joinColumns= @JoinColumn(
+    		name = "emp_id", referencedColumnName = "emp_id"),
+    		inverseJoinColumns = @JoinColumn(
+    		name = "role_id", referencedColumnName = "role_id"))
+    private Collection<Role> roles;
+    @Transient
+    private Collection<? extends GrantedAuthority> grantedAuthorities;
 
     public Long getVersion() {
         return version;
@@ -382,8 +395,7 @@ public class Employee implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        return authorities;
+        return grantedAuthorities;
 	}
 
 	@Override
@@ -421,4 +433,21 @@ public class Employee implements UserDetails {
 	public boolean isEnabled() {
         return true;
 	}
+
+	public Collection<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Collection<Role> roles) {
+		this.roles = roles;
+	}
+
+	public void setGrantedAuthorities(
+			Collection<? extends GrantedAuthority> grantedAuthorities) {
+		this.grantedAuthorities = grantedAuthorities;
+	}
+	
+	
+	
+	
 }
