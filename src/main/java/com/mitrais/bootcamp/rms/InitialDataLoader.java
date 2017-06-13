@@ -70,6 +70,26 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		employee.setRoles(Arrays.asList(adminRole));
 		employeeRepository.save(employee);
 		
+		
+
+		
+		Role userRole = roleRepository.findByName("ROLE_USER");
+		employee = new Employee();
+		employee.setFirstName("Don");
+		employee.setLastName("Corleone");
+		employee.setUsername("doncorleone");
+		employee.setPassword("$2a$10$D4OLKI6yy68crm.3imC9X.P2xqKHs5TloWUcr6z5XdOqnTrAK84ri");
+		employee.setGender(Gender.Male);
+		employee.setPhone("+6222272");
+		employee.setEmail("doncorleone@gmail.com");
+		employee.setJobFamily("JOB");
+		employee.setDateAdded(new java.sql.Timestamp(d.getTime()));
+		employee.setLastModified(new java.sql.Timestamp(d.getTime()));
+		employee.setHiredDate(d);
+		employee.setEmpStatus(EmployeeStatus.Contract);
+		employee.setRoles(Arrays.asList(userRole));
+		employeeRepository.save(employee);
+		
 		alreadySetup = true;
 		
 	}

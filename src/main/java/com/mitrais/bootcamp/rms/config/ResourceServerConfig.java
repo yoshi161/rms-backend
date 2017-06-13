@@ -27,18 +27,23 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
+    	final String ROLE_ADMIN = "ADMIN";
+    	
         http.cors().and()
        // .addFilterBefore(corsFilter, WebConfig.class)
         .authorizeRequests()
         		.and().csrf().disable()
         		.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/roles").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/employees").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/roles").authenticated()
+                .antMatchers(HttpMethod.GET, "/employees").authenticated()
                 .antMatchers(HttpMethod.GET, "/employees/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
                 .antMatchers(HttpMethod.GET, "/employees/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
                 .antMatchers(HttpMethod.GET, "/employees/*/*").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE_DETAIL"))
                 .antMatchers(HttpMethod.POST, "/employees").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
-                .antMatchers(HttpMethod.POST, "/employees/**").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
+               // .antMatchers(HttpMethod.POST, "/employees/**").access(httpAccessScope("ROOT", "ROOT_EMPLOYEE", "READ_EMPLOYEE"))
+                .antMatchers(HttpMethod.PUT, "/employees/**").hasRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.POST, "/employees/**").hasRole(ROLE_ADMIN)
+                .antMatchers(HttpMethod.PATCH, "/employees/**").hasRole(ROLE_ADMIN)
                 .anyRequest().fullyAuthenticated();
 
     }
